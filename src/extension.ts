@@ -1,11 +1,11 @@
 'use strict';
 import * as vscode from 'vscode';
 import { DuplicateObjectProvider } from './duplicateObjectProvider';
-import { processDirectory } from './processDirectory';
+import { findIdenticalObjects } from './findIdentialObjects';
 
 export async function activate(context: vscode.ExtensionContext) {
 	const currentWorkspace = vscode.workspace.workspaceFolders;
-	const isDevelopment = process.env.NODE_ENV === "development";
+	const isDevelopment = true;
 
 	let workspaceDirectory = "";
 	if (!isDevelopment) {
@@ -23,11 +23,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	const excludedDirectories = ".git,node_modules,report,static,assets,bower_components,dist,out,build,eject,.next,.netlify,.yarn,.git,.vscode,package-lock.json,yarn.lock".split(",")
 	.map((str) => str.trim());
 
-	// const chartData = await processDirectory(
-	// 	rootDirectory,
-	// 	excludedDirectories,
-	// );
+	const duplicateGroups = findIdenticalObjects(
+		rootDirectory,
+		excludedDirectories,
+	);
 
-	const duplicateObjectProvider = new DuplicateObjectProvider(rootDirectory);
+	console.log('!! 11111');
+
+	const duplicateObjectProvider = new DuplicateObjectProvider(duplicateGroups);
 	vscode.window.registerTreeDataProvider('duplicateObjects', duplicateObjectProvider);
 }

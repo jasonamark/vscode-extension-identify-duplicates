@@ -10,10 +10,10 @@
 		"type": "git",
 		"url": "https://github.com/jasonamark/vscode-extension-identify-duplicates"
 	},
-  "engines": {
-    "vscode": "^1.90.0",
-    "node": ">=20.15.0"
-  },
+	"engines": {
+		"vscode": "^1.90.0",
+		"node": ">=20.15.0"
+	},
 	"categories": [
 		"Other"
 	],
@@ -60,11 +60,14 @@
 		"@typescript-eslint/eslint-plugin": "^6.7.0",
 		"@typescript-eslint/parser": "^6.7.0",
 		"eslint": "^8.26.0",
-		"typescript": "^5.3.2"
+		"typescript": "~5.5.4"
 	},
 	"dependencies": {
+		"css": "~3.0.0",
+		"fs": "~0.0.1-security",
 		"minimist": "^1.2.6",
 		"mkdirp": "^0.5.1",
+		"path": "~0.12.7",
 		"rimraf": "^2.6.2"
 	}
 }
