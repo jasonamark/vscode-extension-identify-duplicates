@@ -1,6 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import { DuplicateObjectProvider } from './duplicateObjectProvider';
+import { IdenticalObjectProvider } from './identicalObjectProvider';
 import { findIdenticalObjects } from './findIdentialObjects';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -20,7 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	const rootDirectory = isDevelopment ? '/Users/jasonmark/Documents/REV/11Series' : workspaceDirectory;
-	const excludedDirectories = ".git,node_modules,report,static,assets,bower_components,dist,out,build,eject,.next,.netlify,.yarn,.git,.vscode,package-lock.json,yarn.lock".split(",")
+	const excludedDirectories = "node_modules,report,static,assets,bower_components,dist,out,build,eject,package-lock.json,yarn.lock".split(",")
 	.map((str) => str.trim());
 
 	const duplicateGroups = findIdenticalObjects(
@@ -28,8 +28,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		excludedDirectories,
 	);
 
-	console.log('!! 11111');
-
-	const duplicateObjectProvider = new DuplicateObjectProvider(duplicateGroups);
-	vscode.window.registerTreeDataProvider('duplicateObjects', duplicateObjectProvider);
+	const duplicateObjectProvider = new IdenticalObjectProvider(duplicateGroups);
+	vscode.window.registerTreeDataProvider('identicalObjects', duplicateObjectProvider);
+	vscode.commands.registerCommand('identify-duplicates.refresh', () => duplicateObjectProvider.refresh());
 }

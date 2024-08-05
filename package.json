@@ -23,20 +23,27 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"menus": {
+			"view/title": [{
+				"command": "identify-duplicates.refresh",
+				"when": "view == identicalObjects",
+				"group": "navigation"
+			}]
+		},
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "duplicate-objects",
-					"title": "Duplicate Objects",
+					"id": "identical-objects",
+					"title": "Identical Objects",
 					"icon": "media/dep.svg"
 				}
 			]
 		},
 		"views": {
-			"duplicate-objects": [
+			"identical-objects": [
 				{
-					"id": "duplicateObjects",
-					"name": "Duplicate Objects",
+					"id": "identicalObjects",
+					"name": "Identical Objects",
 					"icon": "media/dep.svg"
 				}
 			]
@@ -45,6 +52,14 @@
 			{
 				"command": "identify-duplicates.openFile",
 				"title": "Treeview Item Clicked"
+			},
+			{
+				"command": "identify-duplicates.refresh",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/icons/refresh.svg",
+					"dark": "resources/icons/refresh.svg"
+				}
 			}
 		]
 	},

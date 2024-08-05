@@ -1,3 +1,5 @@
+import path = require("path");
+
 /**
  * Utility function to determine if a folder path should be excluded.
  * @param folderPath - The folder path to check.
@@ -15,6 +17,11 @@ export function shouldExcludeFolder(
   excludePatterns: string[],
 ): boolean {
   return excludePatterns.some((pattern) => {
+    const lastSegment = path.basename(folderPath)
+    if (lastSegment.startsWith('.')) {
+      return true;
+    }
+    
     // Check if the pattern is a regular expression by looking for regex characters
     const isRegex = pattern.includes('*');
         

@@ -9,7 +9,8 @@ const css = require('css');
 
 export interface IParsedObject {
   filePath: string;
-  lineNumber: number;
+  line: number;
+  character: number;
   objectType: string;
   name: string;
   properties: string;
@@ -17,18 +18,40 @@ export interface IParsedObject {
 
 export interface ITreeObject {
   filePath: string;
-  lineNumber: number;
+  line: number;
+  character: number;
   objectType: string;
   name: string;
-  start: number;
 }
 
 export interface IDuplicateGroup {
   duplicates: ITreeObject[]
 }
 
+const lifecycleMethods = new Set([
+  // React lifecycle methods
+  'constructor',
+  'componentDidMount',
+  'componentDidUpdate',
+  'componentWillUnmount',
+  'render',
+  'shouldComponentUpdate',
+  'getDerivedStateFromProps',
+  'getSnapshotBeforeUpdate',
+  'componentDidCatch',
+  // Angular lifecycle hooks
+  'ngOnInit',
+  'ngOnChanges',
+  'ngDoCheck',
+  'ngAfterContentInit',
+  'ngAfterContentChecked',
+  'ngAfterViewInit',
+  'ngAfterViewChecked',
+  'ngOnDestroy'
+]);
+
 export const findIdenticalObjects = (rootDirectory: string, excludedFolders: string[] = []): IDuplicateGroup[] => {
-  const fileTypes = ['.ts']; // ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.less'];
+  const fileTypes = ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.less'];
   const files = getFilesRecursively(rootDirectory, excludedFolders, fileTypes);
   let allParsedObjects: IParsedObject[] = [];
 
@@ -88,15 +111,16 @@ const parseCSS = (filePath: string): IParsedObject[] => {
         const start = rule.position?.start || { line: 0, column: 0 };
         parsedObjects.push({
           filePath,
-          lineNumber: start.line - 1,
-          objectType: 'CSS Rule',
+          line: start.line - 1,
+          character: name.length + 2,
+          objectType: 'CssRule',
           name,
           properties,
         });
       }
     });
   } catch (e) {
-    console.log('parseCSS error: ', e)
+    // console.log('parseCSS error: ', e)
   }
   return parsedObjects;
 };
@@ -107,52 +131,39 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
   const parsedObjects: IParsedObject[] = [];
 
   const visit = (node: ts.Node) => {
-    if (ts.isInterfaceDeclaration(node)) {
-      let name = node.name.getText()
-      let properties = '';
+    let name = ''
+    let properties = '';
+    if (ts.isEnumDeclaration(node)) {
+      name = node.name?.getText();
       node.members.map((member: any) => {
-        properties = properties.concat(`name: ${member.name?.getText() ?? ''} type: ${member.type.getText() ?? ''} `)
+        properties = properties.concat(`name: ${member.name?.getText() ?? ''} kind: ${member.kind}`)
       });
-    
-      // }
+    }
+    if (ts.isInterfaceDeclaration(node)) {
+      name = node.name?.getText()
+      node.members.map((member: any) => {
+        properties = properties.concat(`name: ${member.name?.getText() ?? ''} type: ${member.type.getText() ?? ''}`)
+      });
+    }
+    if (ts.isMethodDeclaration(node)) {
+      name = node.name?.getText()
+      if (!lifecycleMethods.has(name)) {
+        properties = node.body ? node.body.getText() : '';
+      }
+    }
 
-      // if (ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isEnumDeclaration(node) || ts.isVariableStatement(node)) {
-      //   const name = (node as any).name ? (node as any).name.text : ((node as any).declarationList.declarations[0] as any).name.text;
-      //   const properties: string = '';
-        
-      //   if (ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node)) {
-      //     node.members.forEach(member => {
-      //       if (ts.isPropertyDeclaration(member) || ts.isPropertySignature(member) || ts.isMethodDeclaration(member)) {
-      //         properties.concat(member.name.getText());
-      //       }
-      //     });
-      //   } else if (ts.isEnumDeclaration(node)) {
-      //     node.members.forEach(member => {
-      //       properties.concat(member.name.getText());
-      //     });
-      //   } else if (ts.isVariableStatement(node)) {
-      //     node.declarationList.declarations.forEach(declaration => {
-      //       if (declaration.initializer && ts.isObjectLiteralExpression(declaration.initializer)) {
-      //         declaration.initializer.properties.forEach(property => {
-      //           if (ts.isPropertyAssignment(property)) {
-      //             properties.concat(property.name.getText());
-      //           }
-      //         });
-      //       }
-      //     });
-      //   }
-
-      const { line,  } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
-
+    if (name.length && properties.length) {
+      const bodyStart = getObjectBodyStart(node, sourceFile);
+      const { character, line } = sourceFile.getLineAndCharacterOfPosition(bodyStart);
       parsedObjects.push({
         filePath,
-        lineNumber: line,
+        line: line,
+        character: character,
         objectType: ts.SyntaxKind[node.kind],
         name,
         properties
       });
     }
-
     ts.forEachChild(node, visit);
   };
 
@@ -160,6 +171,18 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
 
   return parsedObjects;
 };
+
+const getObjectBodyStart = (node: ts.Node, sourceFile: ts.SourceFile): number => {
+  if (ts.isMethodDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isEnumDeclaration(node)) {
+    // Find the position of the opening curly brace
+    const nodeText = node.getText(sourceFile);
+    const openBraceIndex = nodeText.indexOf('{');
+    if (openBraceIndex !== -1) {
+      return node.getStart(sourceFile) + openBraceIndex + 1; // +1 to get inside the braces
+    }
+  }
+  return node.getStart(sourceFile);
+}
 
 const getDuplicateGroups = (parsedObjects: IParsedObject[]): IDuplicateGroup[] => {
   const duplicateGroups: IDuplicateGroup[] = [];
@@ -178,10 +201,10 @@ const getDuplicateGroups = (parsedObjects: IParsedObject[]): IDuplicateGroup[] =
       objects.forEach((obj) => {
         duplicates.push({
           filePath: obj.filePath,
-          lineNumber: obj.lineNumber,
+          line: obj.line,
+          character: obj.character,
           objectType: obj.objectType,
           name: obj.name,
-          start: obj.lineNumber,
         });
       });
       duplicateGroups.push({ duplicates })
