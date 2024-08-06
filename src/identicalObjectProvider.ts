@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as path from 'path';
 import { IDuplicateGroup, ITreeObject } from './findIdentialObjects';
 
@@ -50,9 +49,9 @@ export class IdenticalObjectProvider implements vscode.TreeDataProvider<TreeItem
 
 		if (element.children?.length) {
 			if (element.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed) {
-				element.iconPath = path.join(__filename, '..', '..', 'resources', 'icons', 'default_folder_opened.svg');
-			} else {
 				element.iconPath = path.join(__filename, '..', '..', 'resources', 'icons', 'default_folder.svg');
+			} else {
+				element.iconPath = path.join(__filename, '..', '..', 'resources', 'icons', 'default_folder_opened.svg');
 			}
 		} else {
 			let extension = path.extname(element.filePath).slice(1);
@@ -68,40 +67,50 @@ export class IdenticalObjectProvider implements vscode.TreeDataProvider<TreeItem
 	}
 
 	getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
-		console.log('!! getChildren', element)
-		console.log('!! this.data', this.data[3])
 		if (element === undefined) {
+			// Hack to get the tree to refresh
+			const label = this.data[0].label as string;
+			if (label) {
+				if (label[label.length - 1] !== ' ') {
+					this.data[0].label += ' ';
+				} else {
+					this.data[0].label = label.slice(0, -1);
+				}
+			}
 			return this.data;
 		}
 		return element.children;
 	}
 
-	refresh(item?: TreeItem): void {
-		console.log('!! refresh')
+	refresh(): void {
 		this._onDidChangeTreeData.fire();
 	}
 
 	updateItemState(item: TreeItem): void {
-		console.log('!! updateItemState', item)
 		item.collapsibleState = item.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed
 			? vscode.TreeItemCollapsibleState.Expanded
 			: vscode.TreeItemCollapsibleState.Collapsed;
-		this.refresh(item);
+		this.refresh()
 	}
 
-	public openFile(item: TreeItem) {
-		console.log('!! openFile', item);
-		this.updateItemState(item);
-		if (item.filePath === undefined || item.children?.length) return;
-		// first we open the document
+	openFile(item: TreeItem) {
+		if (item.filePath === undefined) {
+			return;
+		}
+		if (item.children?.length) {
+			// Update the folder state
+			this.updateItemState(item);
+			return;
+		}
+		// Open the document
 		vscode.workspace.openTextDocument(item.filePath).then(document => {
-			// after opening the document, we set the cursor 
+			// After opening the document, we set the cursor 
 			// and here we make use of the line property which makes imo the code easier to read
 			vscode.window.showTextDocument(document).then(editor => {
 				let pos = new vscode.Position(item.codePosition.line, item.codePosition.character);
-				// here we set the cursor
+				// Set the cursor
 				editor.selection = new vscode.Selection(pos, pos);
-				// here we set the focus of the opened editor
+				// Here we set the focus of the opened editor
 				editor.revealRange(new vscode.Range(pos, pos));
 			}
 			);

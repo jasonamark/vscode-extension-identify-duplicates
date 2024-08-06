@@ -31,4 +31,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	const duplicateObjectProvider = new IdenticalObjectProvider(duplicateGroups);
 	vscode.window.registerTreeDataProvider('identicalObjects', duplicateObjectProvider);
 	vscode.commands.registerCommand('identify-duplicates.refresh', () => duplicateObjectProvider.refresh());
+	const treeView = vscode.window.createTreeView('identicalObjects', { treeDataProvider: duplicateObjectProvider });
+	treeView.onDidExpandElement(e => {
+		duplicateObjectProvider.updateItemState(e.element)
+	});
+	treeView.onDidCollapseElement(e => {
+		duplicateObjectProvider.updateItemState(e.element)
+	});
 }
