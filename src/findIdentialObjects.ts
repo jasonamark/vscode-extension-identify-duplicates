@@ -1,11 +1,11 @@
 import { shouldExcludeFolder } from "./shouldExcludeFolder";
 import * as fs from "fs";
-import * as ts from 'typescript';
+import * as ts from "typescript";
 import { exec as execCb } from "child_process";
 import { promisify } from "util";
 const exec = promisify(execCb);
-import * as path from 'path';
-const css = require('css');
+import * as path from "path";
+const css = require("css");
 
 export interface IParsedObject {
   filePath: string;
@@ -25,41 +25,47 @@ export interface ITreeObject {
 }
 
 export interface IDuplicateGroup {
-  duplicates: ITreeObject[]
+  duplicates: ITreeObject[];
 }
 
 const lifecycleMethods = new Set([
   // React lifecycle methods
-  'constructor',
-  'componentDidMount',
-  'componentDidUpdate',
-  'componentWillUnmount',
-  'render',
-  'shouldComponentUpdate',
-  'getDerivedStateFromProps',
-  'getSnapshotBeforeUpdate',
-  'componentDidCatch',
+  "constructor",
+  "componentDidMount",
+  "componentDidUpdate",
+  "componentWillUnmount",
+  "render",
+  "shouldComponentUpdate",
+  "getDerivedStateFromProps",
+  "getSnapshotBeforeUpdate",
+  "componentDidCatch",
   // Angular lifecycle hooks
-  'ngOnInit',
-  'ngOnChanges',
-  'ngDoCheck',
-  'ngAfterContentInit',
-  'ngAfterContentChecked',
-  'ngAfterViewInit',
-  'ngAfterViewChecked',
-  'ngOnDestroy'
+  "ngOnInit",
+  "ngOnChanges",
+  "ngDoCheck",
+  "ngAfterContentInit",
+  "ngAfterContentChecked",
+  "ngAfterViewInit",
+  "ngAfterViewChecked",
+  "ngOnDestroy",
 ]);
 
-export const findIdenticalObjects = (rootDirectory: string, excludedFolders: string[] = []): IDuplicateGroup[] => {
-  const fileTypes = ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.less'];
+export const findIdenticalObjects = (
+  rootDirectory: string,
+  excludedFolders: string[] = [],
+): IDuplicateGroup[] => {
+  const fileTypes = [".js", ".jsx", ".ts", ".tsx", ".css", ".scss", ".less"];
   const files = getFilesRecursively(rootDirectory, excludedFolders, fileTypes);
   let allParsedObjects: IParsedObject[] = [];
 
   files.forEach((filePath) => {
-    if (filePath.endsWith('.css') || filePath.endsWith('.scss') || filePath.endsWith('.less')) {
+    if (
+      filePath.endsWith(".css") ||
+      filePath.endsWith(".scss") ||
+      filePath.endsWith(".less")
+    ) {
       allParsedObjects = allParsedObjects.concat(parseCSS(filePath));
-    } 
-		else {
+    } else {
       allParsedObjects = allParsedObjects.concat(parseJSOrTS(filePath));
     }
   });
@@ -68,7 +74,11 @@ export const findIdenticalObjects = (rootDirectory: string, excludedFolders: str
 };
 
 /** Returns a list of files */
-const getFilesRecursively = (directory: string, excludedFolders: string[] = [], fileTypes: string[]): string[] => {
+const getFilesRecursively = (
+  directory: string,
+  excludedFolders: string[] = [],
+  fileTypes: string[],
+): string[] => {
   let results: string[] = [];
   const list = fs.readdirSync(directory);
   list.forEach((filePath) => {
@@ -79,7 +89,9 @@ const getFilesRecursively = (directory: string, excludedFolders: string[] = [], 
 
     const stat = fs.statSync(filePath);
     if (stat && stat.isDirectory()) {
-      results = results.concat(getFilesRecursively(filePath, excludedFolders, fileTypes));
+      results = results.concat(
+        getFilesRecursively(filePath, excludedFolders, fileTypes),
+      );
     } else if (fileTypes.some((type) => filePath.endsWith(type))) {
       results.push(filePath);
     }
@@ -89,7 +101,7 @@ const getFilesRecursively = (directory: string, excludedFolders: string[] = [], 
 };
 
 const readFile = (filePath: string): string => {
-  return fs.readFileSync(filePath, 'utf-8');
+  return fs.readFileSync(filePath, "utf-8");
 };
 
 const parseCSS = (filePath: string): IParsedObject[] => {
@@ -100,20 +112,20 @@ const parseCSS = (filePath: string): IParsedObject[] => {
     const parsed = css.parse(content, { source: filePath });
     const rules = parsed.stylesheet?.rules || [];
     rules.forEach((rule: any) => {
-      if (rule.type === 'rule' && rule.selectors && rule.declarations) {
-        const name = rule.selectors.join(', ');
+      if (rule.type === "rule" && rule.selectors && rule.declarations) {
+        const name = rule.selectors.join(", ");
         const properties = rule.declarations
-          .filter((d: any) => d.type === 'declaration')
+          .filter((d: any) => d.type === "declaration")
           .map((d: any) => `${d.property}: ${d.value}`)
           .sort()
-          .join('; ');
+          .join("; ");
 
         const start = rule.position?.start || { line: 0, column: 0 };
         parsedObjects.push({
           filePath,
           line: start.line - 1,
           character: name.length + 2,
-          objectType: 'CssRule',
+          objectType: "CssRule",
           name,
           properties,
         });
@@ -126,42 +138,52 @@ const parseCSS = (filePath: string): IParsedObject[] => {
 };
 
 const parseJSOrTS = (filePath: string): IParsedObject[] => {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const sourceFile = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
+  const content = fs.readFileSync(filePath, "utf-8");
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    content,
+    ts.ScriptTarget.Latest,
+    true,
+  );
   const parsedObjects: IParsedObject[] = [];
 
   const visit = (node: ts.Node) => {
-    let name = ''
-    let properties = '';
+    let name = "";
+    let properties = "";
     if (ts.isEnumDeclaration(node)) {
       name = node.name?.getText();
       node.members.map((member: any) => {
-        properties = properties.concat(`name: ${member.name?.getText() ?? ''} kind: ${member.kind}`)
+        properties = properties.concat(
+          `name: ${member.name?.getText() ?? ""} kind: ${member.kind}`,
+        );
       });
     }
     if (ts.isInterfaceDeclaration(node)) {
-      name = node.name?.getText()
+      name = node.name?.getText();
       node.members.map((member: any) => {
-        properties = properties.concat(`name: ${member.name?.getText() ?? ''} type: ${member.type.getText() ?? ''}`)
+        properties = properties.concat(
+          `name: ${member.name?.getText() ?? ""} type: ${member.type.getText() ?? ""}`,
+        );
       });
     }
     if (ts.isMethodDeclaration(node)) {
-      name = node.name?.getText()
+      name = node.name?.getText();
       if (!lifecycleMethods.has(name)) {
-        properties = node.body ? node.body.getText() : '';
+        properties = node.body ? node.body.getText() : "";
       }
     }
 
     if (name.length && properties.length) {
       const bodyStart = getObjectBodyStart(node, sourceFile);
-      const { character, line } = sourceFile.getLineAndCharacterOfPosition(bodyStart);
+      const { character, line } =
+        sourceFile.getLineAndCharacterOfPosition(bodyStart);
       parsedObjects.push({
         filePath,
         line: line,
         character: character,
         objectType: ts.SyntaxKind[node.kind],
         name,
-        properties
+        properties,
       });
     }
     ts.forEachChild(node, visit);
@@ -172,19 +194,28 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
   return parsedObjects;
 };
 
-const getObjectBodyStart = (node: ts.Node, sourceFile: ts.SourceFile): number => {
-  if (ts.isMethodDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isEnumDeclaration(node)) {
+const getObjectBodyStart = (
+  node: ts.Node,
+  sourceFile: ts.SourceFile,
+): number => {
+  if (
+    ts.isMethodDeclaration(node) ||
+    ts.isInterfaceDeclaration(node) ||
+    ts.isEnumDeclaration(node)
+  ) {
     // Find the position of the opening curly brace
     const nodeText = node.getText(sourceFile);
-    const openBraceIndex = nodeText.indexOf('{');
+    const openBraceIndex = nodeText.indexOf("{");
     if (openBraceIndex !== -1) {
       return node.getStart(sourceFile) + openBraceIndex + 1; // +1 to get inside the braces
     }
   }
   return node.getStart(sourceFile);
-}
+};
 
-const getDuplicateGroups = (parsedObjects: IParsedObject[]): IDuplicateGroup[] => {
+const getDuplicateGroups = (
+  parsedObjects: IParsedObject[],
+): IDuplicateGroup[] => {
   const duplicateGroups: IDuplicateGroup[] = [];
   const propertyMap: Map<string, IParsedObject[]> = new Map();
 
@@ -207,7 +238,7 @@ const getDuplicateGroups = (parsedObjects: IParsedObject[]): IDuplicateGroup[] =
           name: obj.name,
         });
       });
-      duplicateGroups.push({ duplicates })
+      duplicateGroups.push({ duplicates });
     }
   });
 

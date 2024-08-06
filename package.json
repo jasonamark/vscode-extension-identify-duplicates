@@ -1,90 +1,103 @@
 {
-	"name": "identify-duplicates",
-	"displayName": "Identify Duplicates",
-	"description": "Identifies duplicate objects defined in a repository.",
+  "name": "identify-duplicates",
+  "displayName": "Identify Duplicates",
+  "description": "Identifies duplicate objects defined in a repository.",
 	"version": "1.0.3",
-	"publisher": "JasonMark",
-	"private": true,
-	"license": "MIT",
-	"icon": "resources/identify-duplicates.png",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jasonamark/vscode-extension-identify-duplicates"
-	},
-	"engines": {
-		"vscode": "^1.90.0",
-		"node": ">=20.15.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"keywords": ["find", "identify", "duplicate", "identical", "objects", "css", "methods", "interface", "enum", "redundant", "dry"],
-	"activationEvents": [
-		"onLanguage:json",
-		"onLanguage:jsonc"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"menus": {
-			"view/title": [{
-				"command": "identify-duplicates.refresh",
-				"when": "view == identicalObjects",
-				"group": "navigation"
-			}]
-		},
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "identical-objects",
-					"title": "Identical Objects",
-					"icon": "media/dep.svg"
-				}
-			]
-		},
-		"views": {
-			"identical-objects": [
-				{
-					"id": "identicalObjects",
-					"name": "Identical Objects",
-					"icon": "media/dep.svg"
-				}
-			]
-		},
-		"commands": [
-			{
-				"command": "identify-duplicates.openFile",
-				"title": "Treeview Item Clicked"
-			},
-			{
-				"command": "identify-duplicates.refresh",
-				"title": "Refresh",
-				"icon": {
-					"light": "resources/icons/refresh.svg",
-					"dark": "resources/icons/refresh.svg"
-				}
-			}
-		]
-	},
-	"scripts": {
-		"vscode:package": "npm run compile && vsce package",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"lint": "eslint \"src/**/*.ts\""
-	},
-	"devDependencies": {
-		"@types/node": "^16.18.34",
-		"@types/vscode": "^1.73.0",
-		"@typescript-eslint/eslint-plugin": "^6.7.0",
-		"@typescript-eslint/parser": "^6.7.0",
-		"eslint": "^8.26.0",
-		"typescript": "~5.5.4"
-	},
-	"dependencies": {
-		"css": "~3.0.0",
-		"fs": "~0.0.1-security",
-		"minimist": "^1.2.6",
-		"mkdirp": "^0.5.1",
-		"path": "~0.12.7",
-		"rimraf": "^2.6.2"
-	}
+  "publisher": "JasonMark",
+  "private": true,
+  "license": "MIT",
+  "icon": "resources/identify-duplicates.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jasonamark/vscode-extension-identify-duplicates"
+  },
+  "engines": {
+    "vscode": "^1.90.0",
+    "node": ">=20.15.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "find",
+    "identify",
+    "duplicate",
+    "identical",
+    "objects",
+    "css",
+    "methods",
+    "interface",
+    "enum",
+    "redundant",
+    "dry"
+  ],
+  "activationEvents": [
+    "onView:identical-objects"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "menus": {
+      "view/title": [
+        {
+          "command": "identify-duplicates.refresh",
+          "when": "view == identicalObjects",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "identical-objects",
+          "title": "Identical Objects",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "identical-objects": [
+        {
+          "id": "identicalObjects",
+          "name": "Identical Objects",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "identify-duplicates.openFile",
+        "title": "Treeview Item Clicked"
+      },
+      {
+        "command": "identify-duplicates.refresh",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/icons/refresh.svg",
+          "dark": "resources/icons/refresh.svg"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:package": "npm run compile && vsce package",
+    "compile": "tsc -p ./",
+    "format": "npx prettier . --write",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "20.14.8",
+    "@types/vscode": "^1.90.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.26.0",
+    "prettier": "3.3.2",
+    "typescript": "~5.5.4",
+    "css": "~3.0.0",
+    "fs": "~0.0.1-security",
+    "minimist": "^1.2.6",
+    "mkdirp": "^0.5.1",
+    "path": "~0.12.7",
+    "rimraf": "^2.6.2"
+  }
 }

@@ -17,21 +17,21 @@ export function shouldExcludeFolder(
   excludePatterns: string[],
 ): boolean {
   return excludePatterns.some((pattern) => {
-    const lastSegment = path.basename(folderPath)
-    if (lastSegment.startsWith('.')) {
+    const lastSegment = path.basename(folderPath);
+    if (lastSegment.startsWith(".")) {
       return true;
     }
-    
+
     // Check if the pattern is a regular expression by looking for regex characters
-    const isRegex = pattern.includes('*');
-        
+    const isRegex = pattern.includes("*");
+
     if (isRegex) {
       const regex = new RegExp(pattern);
       const match = regex.test(folderPath);
       return match;
     } else {
       // Split folder path into segments and check for exact match
-      const segments = folderPath.split('/');
+      const segments = folderPath.split("/");
       const match = segments.includes(pattern);
       return match;
     }
