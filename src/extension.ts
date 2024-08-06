@@ -5,7 +5,7 @@ import { findIdenticalObjects } from './findIdentialObjects';
 
 export async function activate(context: vscode.ExtensionContext) {
 	const currentWorkspace = vscode.workspace.workspaceFolders;
-	const isDevelopment = true;
+	const isDevelopment = false;
 
 	let workspaceDirectory = "";
 	if (!isDevelopment) {
