@@ -6,9 +6,15 @@ export class IdenticalObjectProvider implements vscode.TreeDataProvider<TreeItem
 	private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | void> = new vscode.EventEmitter<TreeItem | undefined | void>();
   readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
-	data: TreeItem[];
+	data: TreeItem[] = [];
 
-	constructor(private duplicateGroups: IDuplicateGroup[]) {
+	constructor(duplicateGroups: IDuplicateGroup[]) {
+		this.initData(duplicateGroups);
+
+		vscode.commands.registerCommand('identify-duplicates.openFile', item => this.openFile(item));
+	}
+
+	initData(duplicateGroups: IDuplicateGroup[]) {
 		const cssItems: TreeItem[] = []
 		const enumItems: TreeItem[] = []
 		const interfaceItems: TreeItem[] = []
@@ -40,8 +46,6 @@ export class IdenticalObjectProvider implements vscode.TreeDataProvider<TreeItem
 		if (interfaceItems.length) {
 			this.data.push(new TreeItem('method', methodItems))
 		}
-
-		vscode.commands.registerCommand('identify-duplicates.openFile', item => this.openFile(item));
 	}
 
 	getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -68,18 +72,14 @@ export class IdenticalObjectProvider implements vscode.TreeDataProvider<TreeItem
 
 	getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
 		if (element === undefined) {
-			// Hack to get the tree to refresh
-			const label = this.data[0].label as string;
-			if (label) {
-				if (label[label.length - 1] !== ' ') {
-					this.data[0].label += ' ';
-				} else {
-					this.data[0].label = label.slice(0, -1);
-				}
-			}
 			return this.data;
 		}
 		return element.children;
+	}
+
+	reloadData(duplicateGroups: IDuplicateGroup[]): void {
+		this.initData(duplicateGroups);
+		this.refresh()
 	}
 
 	refresh(): void {
@@ -87,6 +87,8 @@ export class IdenticalObjectProvider implements vscode.TreeDataProvider<TreeItem
 	}
 
 	updateItemState(item: TreeItem): void {
+		// Hack to get the tree to refresh
+		item.label += ' ';
 		item.collapsibleState = item.collapsibleState === vscode.TreeItemCollapsibleState.Collapsed
 			? vscode.TreeItemCollapsibleState.Expanded
 			: vscode.TreeItemCollapsibleState.Collapsed;

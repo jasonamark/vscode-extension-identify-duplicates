@@ -6,6 +6,7 @@
 	"publisher": "JasonMark",
 	"private": true,
 	"license": "MIT",
+	"icon": "resources/identify-duplicates.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jasonamark/vscode-extension-identify-duplicates"

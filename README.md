@@ -1,51 +1,27 @@
-# Views & View Containers
+# A Visual Studio Code Extension to Identify Duplicate Code
 
-This sample demonstrates how to implement and contribute a tree view in VS Code. This includes:
+This Visual Studio Code extension identifies duplicate CSS rules, interface definitions, enums, and methods within your project. The duplicate objects are listed in a tree view grouped by type, allowing you to easily navigate and manage your codebase.
 
-- Contributing views and view containers.
-- Contributing actions in various location of the view.
-- Implementing the tree data provider for the view.
-- Creating and working with the view.
+## Features
 
-This sample provides following views
+- **Tree View Listing**: View duplicate CSS rules, interface definitions, enums, and methods grouped by type.
+- **File Navigation**: Click on an item in the tree view to open the file and set the cursor to the definition location.
+- **Manual Refresh**: Use the refresh button at the top of the tree view to manually refresh the list after making file changes.
+- **Automatic Exclusion**: Automatically ignore files in the node_modules directory and any directory prefixed with a '.'.
 
-- Node dependencies view
-- Ftp file explorer view
+## Usage
 
-Following example shows Node dependencies view in Package Explorer View container.
+![Repository Visualization](https://github.com/jasonamark/jasonamark/raw/main/identify-duplicates.gif)
 
-![Package Explorer](./resources/package-explorer.png)
+## Why This Extension is Helpful
 
-## VS Code API
+By identifying duplicate objects, this extension helps you eliminate redundancy, making your codebase cleaner and more maintainable.
 
-This sample uses following contribution points, activation events and APIs
+## Features in Development
 
-### Contribution Points
+- **Set Root Directory**: Customize the root directory for your analysis.
+- **Directory Exclusion**: Specify directories to exclude from the repository analysis.
 
-- `views`
-- `viewsContainers`
-- `menu`
-  - `view/title`
-  - `view/item/context`
+## Feedback
 
-### Activation Events
-
-- `onView:${viewId}`
-
-### APIs
-
-- `window.createTreeView`
-- `window.registerTreeDataProvider`
-- `TreeView`
-- `TreeDataProvider`
-
-Refer to [Usage](./USAGE.md) document for more details.
-
-## Running the Sample
-
-- Open this example in VS Code Insiders
-- `npm install`
-- `npm run watch`
-- `F5` to start debugging
-- Node dependencies view is shown in Package explorer view container in Activity bar.
-- FTP file explorer view should be shown in Explorer
+I value your feedback and suggestions! If you encounter any issues, have questions, or want to propose new features, please send me an email [jason.a.mark@gmail.com](jason.a.mark@gmail.com).
