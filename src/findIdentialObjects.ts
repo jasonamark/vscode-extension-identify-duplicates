@@ -80,23 +80,31 @@ const getFilesRecursively = (
   fileTypes: string[],
 ): string[] => {
   let results: string[] = [];
-  const list = fs.readdirSync(directory);
-  list.forEach((filePath) => {
-    filePath = path.join(directory, filePath);
-    if (shouldExcludeFolder(filePath, excludedFolders)) {
-      return;
-    }
-
-    const stat = fs.statSync(filePath);
-    if (stat && stat.isDirectory()) {
-      results = results.concat(
-        getFilesRecursively(filePath, excludedFolders, fileTypes),
-      );
-    } else if (fileTypes.some((type) => filePath.endsWith(type))) {
-      results.push(filePath);
-    }
-  });
-
+  try {
+    const list = fs.readdirSync(directory);
+    list.forEach((filePath) => {
+      filePath = path.join(directory, filePath);
+      if (shouldExcludeFolder(filePath, excludedFolders)) {
+        return;
+      }
+  
+      try {
+        const stat = fs.statSync(filePath);
+        if (stat && stat.isDirectory()) {
+          results = results.concat(
+            getFilesRecursively(filePath, excludedFolders, fileTypes),
+          );
+        } else if (fileTypes.some((type) => filePath.endsWith(type))) {
+          results.push(filePath);
+        }
+      } catch (e) {
+        // console.log('There was an error using statSync on', filePath);
+      }
+    });
+  } catch (e) {
+    // console.log('There was an error using readdirSync on', directory);
+  }
+  
   return results;
 };
 
