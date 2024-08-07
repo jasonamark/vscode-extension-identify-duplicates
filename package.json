@@ -2,7 +2,7 @@
   "name": "identify-duplicates",
   "displayName": "Duplicate Objects",
   "description": "Identifies duplicate objects defined in a repository.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publisher": "JasonMark",
   "private": true,
   "license": "MIT",
@@ -49,7 +49,7 @@
       "activitybar": [
         {
           "id": "identical-objects",
-          "title": "Identical Objects",
+          "title": "Duplicate Objects",
           "icon": "media/dep.svg"
         }
       ]
@@ -58,7 +58,7 @@
       "identical-objects": [
         {
           "id": "identicalObjects",
-          "name": "Identical Objects",
+          "name": "Duplicate Objects",
           "icon": "media/dep.svg"
         }
       ]

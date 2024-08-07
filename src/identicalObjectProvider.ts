@@ -68,7 +68,7 @@ export class IdenticalObjectProvider
       this.data.push(new TreeItem("method", methodItems));
     }
     if (this.data.length === 0) {
-      this.data.push(new TreeItem("No Identical Objects Found", []));
+      this.data.push(new TreeItem("No Duplicates Found", []));
     }
   }
 
