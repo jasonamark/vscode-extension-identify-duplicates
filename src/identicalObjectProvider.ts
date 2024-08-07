@@ -13,9 +13,7 @@ export class IdenticalObjectProvider
 
   data: TreeItem[] = [];
 
-  constructor(duplicateGroups: IDuplicateGroup[]) {
-    this.initData(duplicateGroups);
-
+  constructor() {
     vscode.commands.registerCommand("identify-duplicates.openFile", (item) =>
       this.openFile(item),
     );
@@ -68,6 +66,9 @@ export class IdenticalObjectProvider
     }
     if (interfaceItems.length) {
       this.data.push(new TreeItem("method", methodItems));
+    }
+    if (this.data.length === 0) {
+      this.data.push(new TreeItem("No Identical Objects Found", []));
     }
   }
 
@@ -129,7 +130,7 @@ export class IdenticalObjectProvider
     return element.children;
   }
 
-  reloadData(duplicateGroups: IDuplicateGroup[]): void {
+  loadData(duplicateGroups: IDuplicateGroup[]): void {
     this.initData(duplicateGroups);
     this.refresh();
   }
