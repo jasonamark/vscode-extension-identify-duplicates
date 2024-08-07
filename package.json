@@ -1,8 +1,8 @@
 {
   "name": "identify-duplicates",
-  "displayName": "Identify Duplicates",
+  "displayName": "Duplicate Objects",
   "description": "Identifies duplicate objects defined in a repository.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "JasonMark",
   "private": true,
   "license": "MIT",
