@@ -1,0 +1,32 @@
+@import "./utilities.css";
+
+:root {
+  --lexia-orange: #f2a343;
+}
+
+.app {
+  margin: 0px auto;
+  max-width: 80rem;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 240px);
+}
+
+.control {
+  width: 100%;
+}
+
+.include-text {
+  font-size: 11px;
+  margin-bottom: 3px; 
+}
+
+.exclude-text {
+  font-size: 11px;
+  margin-top: 5px; 
+  margin-bottom: 3px; 
+}

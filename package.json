@@ -2,7 +2,7 @@
   "name": "identify-duplicates",
   "displayName": "Duplicate Objects",
   "description": "Identifies duplicate objects defined in a repository.",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "publisher": "JasonMark",
   "private": true,
   "license": "MIT",
@@ -31,9 +31,7 @@
     "redundant",
     "dry"
   ],
-  "activationEvents": [
-    "onView:identical-objects"
-  ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "menus": {
@@ -57,9 +55,9 @@
     "views": {
       "identical-objects": [
         {
+          "type": "webview",
           "id": "identicalObjects",
-          "name": "Duplicate Objects",
-          "icon": "media/dep.svg"
+          "name": "Duplicate Objects"
         }
       ]
     },
@@ -79,23 +77,43 @@
     ]
   },
   "scripts": {
-    "vscode:package": "npm run compile && vsce package",
-    "compile": "tsc -p ./",
+    "vscode:package": "npm run package && vsce package",
     "format": "npx prettier . --write",
-    "watch": "tsc -watch -p ./",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
+    "watch:wv": "webpack serve --mode development --config ./webpack/webview.config.js",
+    "package": "npm run clean && npm-run-all --parallel package:*",
+    "package:ext": "webpack --mode production --config ./webpack/extension.config.js",
+    "package:wv": "webpack --mode production --config ./webpack/webview.config.js",
+    "compile-tests": "tsc -p . --outDir dist",
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
     "css": "~3.0.0",
     "fs": "~0.0.1-security",
     "path": "~0.12.7",
-    "typescript": "~5.5.4"
+    "typescript": "~5.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/node": "20.14.8",
     "@types/vscode": "^1.90.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
-    "eslint": "^8.26.0"
+    "@vscode/webview-ui-toolkit": "~1.4.0",
+    "css-loader": "~7.1.2",
+    "eslint": "^8.26.0",
+    "npm-run-all": "~4.1.5",
+    "prettier": "3.3.2",
+    "postcss-loader": "~8.1.1",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.92.1",
+    "webpack-cli": "~5.1.4",
+    "webpack-dev-server": "~5.0.4"
   }
 }
