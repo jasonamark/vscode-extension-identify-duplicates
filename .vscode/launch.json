@@ -13,7 +13,7 @@
         "vscode-samples.custom-view-samples"
       ],
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/out/**/*.js"],
+      "outFiles": ["${workspaceRoot}/dist/**/*.js"],
       "preLaunchTask": "npm: watch"
     },
     {

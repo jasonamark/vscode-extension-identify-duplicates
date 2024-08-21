@@ -9,7 +9,7 @@ import {
 } from "@vscode/webview-ui-toolkit/react";
 import * as React from "react";
 import "./styles.css";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -21,12 +21,27 @@ const vscode = acquireVsCodeApi<{ message: string }>();
 
 const defaultRootDirectory =
   process.env.NODE_ENV === "development"
-    ? "/Users/jasonmark/Documents/LEX/lobo/src"
+    ? "/Users/jasonmark/Documents/REV/11Series"
     : "";
 
 export function App() {
   const [excludedDirectories, setExcludedDirectories] = useState("");
   const [rootDirectory, setRootDirectory] = useState(defaultRootDirectory);
+
+  React.useEffect(() => {
+    window.addEventListener("message", (event) => {
+      console.log('!! app event received', event);
+    });
+
+    fetchDuplicates();
+  }, []);
+  
+  const fetchDuplicates = useCallback(() => {
+    vscode.postMessage({
+      command: "fetchDuplicates",
+      data: { rootDirectory, excludedDirectories },
+    });
+  }, [rootDirectory, excludedDirectories]);
 
   return (
     <div className="app">

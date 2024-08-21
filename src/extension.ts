@@ -6,8 +6,6 @@ import { join } from "path";
 import { ExtensionContext, ExtensionMode, Uri, Webview } from "vscode";
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.log('!! activate context.extensionUri', context.extensionUri);
-
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider("identicalObjects", new SidebarWebviewProvider(context))
   );
@@ -62,80 +60,83 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 class SidebarWebviewProvider implements vscode.WebviewViewProvider {
-  private _view?: vscode.WebviewView;
-
-  constructor(private readonly _context: vscode.ExtensionContext) {}
-
-  resolveWebviewView(webviewView: vscode.WebviewView,
-    context: vscode.WebviewViewResolveContext,
-  ) {
-    this._view = webviewView;
-
-    webviewView.webview.options = {
-			// Allow scripts in the webview
-			enableScripts: true,
-
-			localResourceRoots: [
-				this._context.extensionUri
-			]
-		};
-
-		webviewView.webview.html = getWebviewContent(this._context, webviewView, "sidebar.js",
-        "http://localhost:9000",);
+  constructor(private readonly _context: vscode.ExtensionContext) {
   }
 
-  // private getHtmlForWebview(webview: vscode.Webview): string {
-  //   // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-	// 	// const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
+  resolveWebviewView(webviewView: vscode.WebviewView
+  ) {
 
-	// 	// Do the same for the stylesheet.
-	// 	// const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-	// 	// const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-	// 	// const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
+    webviewView.webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
+      localResourceRoots: [
+        this._context.extensionUri
+      ]
+    };
 
-	// 	// Use a nonce to only allow a specific script to be run.
-	// 	const nonce = getNonce();
+    webviewView.webview.html = getWebviewContent(this._context, webviewView, "sidebar.js",
+      "http://localhost:9000",);
 
-  //   /*
-  //   <link href="${styleResetUri}" rel="stylesheet">
-  //   <link href="${styleVSCodeUri}" rel="stylesheet">
-  //   <link href="${styleMainUri}" rel="stylesheet">
-  //   */
+    webviewView.webview.onDidReceiveMessage((message) => {
+      console.log('!! message', message);
 
-	// 	return `<!DOCTYPE html>
-	// 		<html lang="en">
-	// 		<head>
-	// 			<meta charset="UTF-8">
+      if (message.command === 'fetchDuplicates') {
+        const currentWorkspace = vscode.workspace.workspaceFolders;
+        const isDevelopment = process.env.NODE_ENV === "development";
 
-	// 			<!--
-	// 				Use a content security policy to only allow loading styles from our extension directory,
-	// 				and only allow scripts that have a specific nonce.
-	// 				(See the 'webview-sample' extension sample for img-src content security policy examples)
-	// 			-->
-	// 			<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+        let workspaceDirectory = "";
+        if (!isDevelopment) {
+          if (currentWorkspace && currentWorkspace.length > 0) {
+            workspaceDirectory = currentWorkspace[0].uri.fsPath;
+          } else {
+            webviewView.webview.postMessage({ chartData: { name: "" } });
+            vscode.window.showInformationMessage(
+              "No workspace folder is open",
+            );
+            return;
+          }
+        }
 
-	// 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        const rootDirectory = isDevelopment
+          ? message.data.rootDirectory
+          : join(workspaceDirectory, message.data.rootDirectory);
+        let excludedDirectoriesString =
+          (message.data.excludedDirectories as string) || "";
+        const additionalDirectories =
+          "node_modules,report,static,assets,bower_components,dist,out,build,eject,package-lock.json,yarn.lock";
+        if (excludedDirectoriesString.length) {
+          excludedDirectoriesString = `${excludedDirectoriesString},${additionalDirectories}`;
+        } else {
+          excludedDirectoriesString = additionalDirectories;
+        }
+        const excludedDirectories = excludedDirectoriesString
+          .split(",")
+          .map((str) => str.trim());
 
-	// 			<title>Cat Colors</title>
-	// 		</head>
-	// 		<body>
-	// 			<ul class="color-list">
-	// 			</ul>
+        const duplicateGroups = findIdenticalObjects(
+          rootDirectory,
+          excludedDirectories,
+        );
 
-	// 			<button class="add-color-button">Add Color</button>
+        console.log('!! duplicateGroups', duplicateGroups)
 
-	// 		</body>
-	// 		</html>`;
-  // }
+        // const chartData = await processDirectory(
+        //   rootDirectory,
+        //   excludedDirectories,
+        // );
+        webviewView.webview.postMessage({ duplicateGroups });
+      }
+    }, null);
+  }
 }
 
 function getNonce() {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 32; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 const getWebviewContent = (
