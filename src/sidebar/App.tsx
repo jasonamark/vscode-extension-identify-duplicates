@@ -10,6 +10,12 @@ import {
 import * as React from "react";
 import "./styles.css";
 import { useCallback, useState } from "react";
+import {
+  IDuplicateGroup,
+  IDuplicateGroupsByType,
+} from "../findDuplicateGroupsByType";
+import { TreeNode } from "./components/TreeNode";
+import Tree from "./components/Tree";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -25,17 +31,23 @@ const defaultRootDirectory =
     : "";
 
 export function App() {
+  const [duplicateGroupsByType, setDuplicateGroupsByType] =
+    useState<IDuplicateGroupsByType | null>(null);
   const [excludedDirectories, setExcludedDirectories] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [rootDirectory, setRootDirectory] = useState(defaultRootDirectory);
 
   React.useEffect(() => {
     window.addEventListener("message", (event) => {
-      console.log('!! app event received', event);
+      console.log("!! app event received", event);
+      if ("duplicateGroupsByType" in event.data) {
+        setDuplicateGroupsByType(event.data.duplicateGroupsByType);
+      }
     });
 
     fetchDuplicates();
   }, []);
-  
+
   const fetchDuplicates = useCallback(() => {
     vscode.postMessage({
       command: "fetchDuplicates",
@@ -65,6 +77,9 @@ export function App() {
           }}
           placeholder="e.g. *helpers, folder"
         />
+        {duplicateGroupsByType && (<div>
+          <Tree duplicateGroupsByType={duplicateGroupsByType} />
+        </div>)}
       </div>
     </div>
   );

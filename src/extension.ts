@@ -1,13 +1,16 @@
 "use strict";
 import * as vscode from "vscode";
 import { IdenticalObjectProvider } from "./identicalObjectProvider";
-import { findIdenticalObjects } from "./findIdentialObjects";
+import { findDuplicateGroupsByType } from "./findDuplicateGroupsByType";
 import { join } from "path";
 import { ExtensionContext, ExtensionMode, Uri, Webview } from "vscode";
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider("identicalObjects", new SidebarWebviewProvider(context))
+    vscode.window.registerWebviewViewProvider(
+      "identicalObjects",
+      new SidebarWebviewProvider(context),
+    ),
   );
 
   // const duplicateObjectProvider = new IdenticalObjectProvider();
@@ -60,27 +63,24 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 class SidebarWebviewProvider implements vscode.WebviewViewProvider {
-  constructor(private readonly _context: vscode.ExtensionContext) {
-  }
+  constructor(private readonly _context: vscode.ExtensionContext) {}
 
-  resolveWebviewView(webviewView: vscode.WebviewView
-  ) {
-
+  resolveWebviewView(webviewView: vscode.WebviewView) {
     webviewView.webview.options = {
       // Allow scripts in the webview
       enableScripts: true,
-      localResourceRoots: [
-        this._context.extensionUri
-      ]
+      localResourceRoots: [this._context.extensionUri],
     };
 
-    webviewView.webview.html = getWebviewContent(this._context, webviewView, "sidebar.js",
-      "http://localhost:9000",);
+    webviewView.webview.html = getWebviewContent(
+      this._context,
+      webviewView,
+      "sidebar.js",
+      "http://localhost:9000",
+    );
 
     webviewView.webview.onDidReceiveMessage((message) => {
-      console.log('!! message', message);
-
-      if (message.command === 'fetchDuplicates') {
+      if (message.command === "fetchDuplicates") {
         const currentWorkspace = vscode.workspace.workspaceFolders;
         const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -90,9 +90,7 @@ class SidebarWebviewProvider implements vscode.WebviewViewProvider {
             workspaceDirectory = currentWorkspace[0].uri.fsPath;
           } else {
             webviewView.webview.postMessage({ chartData: { name: "" } });
-            vscode.window.showInformationMessage(
-              "No workspace folder is open",
-            );
+            vscode.window.showInformationMessage("No workspace folder is open");
             return;
           }
         }
@@ -113,26 +111,21 @@ class SidebarWebviewProvider implements vscode.WebviewViewProvider {
           .split(",")
           .map((str) => str.trim());
 
-        const duplicateGroups = findIdenticalObjects(
+        const duplicateGroupsByType = findDuplicateGroupsByType(
           rootDirectory,
           excludedDirectories,
         );
 
-        console.log('!! duplicateGroups', duplicateGroups)
-
-        // const chartData = await processDirectory(
-        //   rootDirectory,
-        //   excludedDirectories,
-        // );
-        webviewView.webview.postMessage({ duplicateGroups });
+        webviewView.webview.postMessage({ duplicateGroupsByType });
       }
     }, null);
   }
 }
 
 function getNonce() {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < 32; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }

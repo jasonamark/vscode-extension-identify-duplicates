@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { IDuplicateGroup, ITreeObject } from "./findIdentialObjects";
+import { IDuplicateGroup, ITreeObject } from "./findDuplicateGroupsByType";
 
 export class IdenticalObjectProvider
   implements vscode.TreeDataProvider<TreeItem>
