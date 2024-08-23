@@ -26,8 +26,8 @@ export function shouldExcludeFolder(
     const isRegex = pattern.includes("*");
 
     if (isRegex) {
-      const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
-      const regexPattern = escapedPattern.replace(/\\\*/g, '.*'); // Convert '*' to '.*' (matches any character sequence)
+      const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special characters
+      const regexPattern = escapedPattern.replace(/\\\*/g, ".*"); // Convert '*' to '.*' (matches any character sequence)
       const regex = new RegExp(`^${regexPattern}$`);
       const match = regex.test(folderPath);
       return match;
@@ -66,8 +66,8 @@ export function shouldExcludeFile(
     const isRegex = pattern.includes("*");
 
     if (isRegex) {
-      const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
-      const regexPattern = escapedPattern.replace(/\\\*/g, '.*'); // Convert '*' to '.*' (matches any character sequence)
+      const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special characters
+      const regexPattern = escapedPattern.replace(/\\\*/g, ".*"); // Convert '*' to '.*' (matches any character sequence)
       const regex = new RegExp(`^${regexPattern}$`);
       const match = regex.test(lastSegment);
       return match;

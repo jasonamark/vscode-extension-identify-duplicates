@@ -1,9 +1,6 @@
 import { shouldExcludeFile, shouldExcludeFolder } from "./shouldExclude";
 import * as fs from "fs";
 import * as ts from "typescript";
-import { exec as execCb } from "child_process";
-import { promisify } from "util";
-const exec = promisify(execCb);
 import * as path from "path";
 const css = require("css");
 
@@ -122,11 +119,11 @@ const getFilesRecursively = (
           results.push(filePath);
         }
       } catch (e) {
-        console.log('There was an error using statSync on', filePath, e);
+        console.log("There was an error using statSync on", filePath, e);
       }
     });
   } catch (e) {
-    console.log('There was an error using readdirSync on', directory, e);
+    console.log("There was an error using readdirSync on", directory, e);
   }
 
   return results;
@@ -199,7 +196,8 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
           const previousMember = node.members[index - 1];
           if (previousMember.initializer) {
             const prevValue = eval(previousMember.initializer.getText()); // Not recommended for untrusted code!
-            assignedValue = typeof prevValue === 'number' ? prevValue + 1 : undefined;
+            assignedValue =
+              typeof prevValue === "number" ? prevValue + 1 : undefined;
           } else {
             assignedValue = index;
           }
@@ -224,7 +222,10 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
       name = node.name?.getText();
       if (!lifecycleMethods.has(name)) {
         // Exclude empty bodies { }
-        properties = node.body && node.body.getText().length > 4 ? node.body.getText() : "";
+        properties =
+          node.body && node.body.getText().length > 4
+            ? node.body.getText()
+            : "";
       }
     }
 

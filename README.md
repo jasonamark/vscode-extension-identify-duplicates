@@ -16,8 +16,8 @@ This Visual Studio Code extension identifies duplicate object definitions in you
 
 ## What's new in 1.0.12
 
-- **Set Root Directory**: Customize the root directory path for your analysis.
-- **Directory Exclusion**: Specify files to exclude from the repository analysis.
+- **Set Root Directory**: Configure the root directory path for your analysis.
+- **Directory Exclusion**: Specify directories to exclude from the repository analysis.
 
 ## Usage
 

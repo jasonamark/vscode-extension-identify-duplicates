@@ -53,7 +53,7 @@ export class SidebarWebviewProvider implements vscode.WebviewViewProvider {
 
   private setDirectories(data: {
     rootDirectory: string;
-    excludedFiles: string;
+    excludedDirectories: string;
   }) {
     const currentWorkspace = vscode.workspace.workspaceFolders;
     const isDevelopment = process.env.NODE_ENV === "development";
@@ -71,19 +71,17 @@ export class SidebarWebviewProvider implements vscode.WebviewViewProvider {
     this._rootDirectory = isDevelopment
       ? data.rootDirectory
       : join(workspaceDirectory, data.rootDirectory);
-      
-    this._excludedDirectories = "node_modules,report,static,assets,bower_components,dist,out,build,eject"
-      .split(",")
-      .map((str) => str.trim());
 
-    const additionalFiles = "package-lock.json,yarn.lock"
+    this._excludedDirectories =
+      "node_modules,report,static,assets,bower_components,dist,out,build,eject"
+        .split(",")
+        .map((str) => str.trim())
+        .concat(data.excludedDirectories.split(",").map((str) => str.trim()))
+        .filter((str) => str !== "");
+
+    this._excludedFiles = "package-lock.json,yarn.lock"
       .split(",")
       .map((str) => str.trim());
-    this._excludedFiles = data.excludedFiles
-      .split(",")
-      .map((str) => str.trim())
-      .filter((str) => str !== '')
-      .concat(additionalFiles);
   }
 
   private openDocument(data: { treeObject: ITreeObject }) {

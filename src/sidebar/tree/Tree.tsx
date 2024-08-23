@@ -8,7 +8,6 @@ export interface ITreeProps {
 }
 
 export function Tree({ duplicateGroupsByType }: ITreeProps) {
-
   const hasNoDuplicates = (): boolean => {
     return (
       duplicateGroupsByType.css.length === 0 &&
@@ -16,22 +15,23 @@ export function Tree({ duplicateGroupsByType }: ITreeProps) {
       duplicateGroupsByType.interface.length === 0 &&
       duplicateGroupsByType.method.length === 0
     );
-  }
+  };
 
   return (
     <>
-      {hasNoDuplicates() &&
-        <div className="no-duplicates">no duplicates found</div>
-      }
-      {!hasNoDuplicates() &&
-        (<div className="tree">
+      {hasNoDuplicates() && (
+        <div className="no-duplicates">No Duplicates Found</div>
+      )}
+      {!hasNoDuplicates() && (
+        <div className="tree">
           {Object.entries(duplicateGroupsByType).map(
-            ([key, groups]: [key: string, groups: IDuplicateGroup[]]) => 
+            ([key, groups]: [key: string, groups: IDuplicateGroup[]]) =>
               groups.length > 0 && (
                 <TreeNode key={key} isRoot={true} name={key} node={groups} />
               ),
           )}
-        </div>)}
+        </div>
+      )}
     </>
   );
 }

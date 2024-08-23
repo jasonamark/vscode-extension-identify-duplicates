@@ -70,8 +70,8 @@
         "command": "identify-duplicates.refresh",
         "title": "Refresh",
         "icon": {
-          "light": "src/assets/refresh.svg",
-          "dark": "src/assets/refresh.svg"
+          "light": "resources/refresh.svg",
+          "dark": "resources/refresh.svg"
         }
       }
     ]
@@ -85,6 +85,7 @@
     "package": "npm run clean && npm-run-all --parallel package:*",
     "package:ext": "webpack --mode production --config ./webpack/extension.config.js",
     "package:wv": "webpack --mode production --config ./webpack/webview.config.js",
+    "clean": "rimraf dist",
     "compile-tests": "tsc -p . --outDir dist",
     "lint": "eslint \"src/**/*.ts\""
   },
