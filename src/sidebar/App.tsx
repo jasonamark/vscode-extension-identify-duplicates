@@ -1,12 +1,8 @@
-import {
-  VSCodeTextField,
-} from "@vscode/webview-ui-toolkit/react";
+import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import * as React from "react";
 import "./styles.css";
 import { useCallback, useState } from "react";
-import {
-  IDuplicateGroupsByType,
-} from "../findDuplicateGroupsByType";
+import { IDuplicateGroupsByType } from "../findDuplicateGroupsByType";
 import Tree from "./components/Tree";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
@@ -31,7 +27,6 @@ export function App() {
 
   React.useEffect(() => {
     window.addEventListener("message", (event) => {
-      console.log("!! app event received", event);
       if ("duplicateGroupsByType" in event.data) {
         setDuplicateGroupsByType(event.data.duplicateGroupsByType);
       }
@@ -62,17 +57,17 @@ export function App() {
         />
         <div className="exclude-text">files to exclude</div>
         <VSCodeTextField
-          className="control mb2"
+          className="control mb1"
           value={excludedDirectories}
           onInput={(e: any) => {
             setExcludedDirectories(e.target.value);
           }}
-          placeholder="e.g. *helpers, folder"
+          placeholder="e.g. *.tsx, file"
         />
-        {duplicateGroupsByType && (<div>
-          <Tree duplicateGroupsByType={duplicateGroupsByType} />
-        </div>)}
       </div>
+      {duplicateGroupsByType && (
+        <Tree duplicateGroupsByType={duplicateGroupsByType} />
+      )}
     </div>
   );
 }

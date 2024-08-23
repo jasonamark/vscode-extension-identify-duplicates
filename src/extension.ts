@@ -160,7 +160,7 @@ const getWebviewContent = (
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		${isProduction ? `<link href="${cssUrl}" rel="stylesheet">` : ""}
 	</head>
-	<body>
+	<body style="padding: 0;">
 		<div id="root"></div>
 		<script nonce="${nonce}" src="${scriptUrl}"></script>
 	</body>

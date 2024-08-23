@@ -1,24 +1,22 @@
-import React from 'react';
+import React from "react";
 import { IDuplicateGroup, IDuplicateGroupsByType } from "../types";
 import { TreeNode } from "./TreeNode";
+import "./styles.css";
 
 export interface ITreeProps {
-	duplicateGroupsByType: IDuplicateGroupsByType
+  duplicateGroupsByType: IDuplicateGroupsByType;
 }
 
 export function Tree({ duplicateGroupsByType }: ITreeProps) {
   return (
-    <div>
-      {Object.entries(duplicateGroupsByType).map(([key, groups]: [key: string, groups: IDuplicateGroup[]]) => (
-        <TreeNode
-					key={key}
-					node={groups}
-					objectGroup={key}
-					isFolder={true}
-				/>
-      ))}
+    <div className="tree">
+      {Object.entries(duplicateGroupsByType).map(
+        ([key, groups]: [key: string, groups: IDuplicateGroup[]]) => (
+          <TreeNode key={key} isRoot={true} name={key} node={groups} />
+        ),
+      )}
     </div>
   );
-};
+}
 
 export default Tree;
