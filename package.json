@@ -70,8 +70,8 @@
         "command": "identify-duplicates.refresh",
         "title": "Refresh",
         "icon": {
-          "light": "resources/icons/refresh.svg",
-          "dark": "resources/icons/refresh.svg"
+          "light": "src/assets/refresh.svg",
+          "dark": "src/assets/refresh.svg"
         }
       }
     ]

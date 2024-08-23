@@ -11,7 +11,7 @@ declare const acquireVsCodeApi: <T = unknown>() => {
   postMessage: (msg: unknown) => void;
 };
 
-const vscode = acquireVsCodeApi<{ message: string }>();
+export const vscode = acquireVsCodeApi<{ message: string }>();
 
 const defaultRootDirectory =
   process.env.NODE_ENV === "development"

@@ -80,7 +80,25 @@ class SidebarWebviewProvider implements vscode.WebviewViewProvider {
     );
 
     webviewView.webview.onDidReceiveMessage((message) => {
-      if (message.command === "fetchDuplicates") {
+      if (message.command === "openDocument") {
+        // Open the document
+        const item = message.data.treeObject;
+        vscode.workspace.openTextDocument(item.filePath).then((document) => {
+          // After opening the document, we set the cursor
+          // and here we make use of the line property which makes imo the code easier to read
+          vscode.window.showTextDocument(document).then((editor) => {
+            let pos = new vscode.Position(
+              item.line,
+              item.character,
+            );
+            // Set the cursor
+            editor.selection = new vscode.Selection(pos, pos);
+            // Here we set the focus of the opened editor
+            editor.revealRange(new vscode.Range(pos, pos));
+          });
+        });
+      } else if (message.command === "fetchDuplicates") {
+        // Read directory for duplicate objects
         const currentWorkspace = vscode.workspace.workspaceFolders;
         const isDevelopment = process.env.NODE_ENV === "development";
 

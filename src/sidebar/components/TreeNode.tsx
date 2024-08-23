@@ -10,6 +10,7 @@ import less from "../../assets/file_type_less.svg";
 import openFolder from "../../assets/folder_opened.svg";
 import scss from "../../assets/file_type_scss.svg";
 import typescript from "../../assets/file_type_typescript.svg";
+import { vscode } from "../App";
 
 const getIconForType = (filePath: string) => {
   let extension = filePath.split('.').pop();
@@ -37,6 +38,13 @@ export interface ITreeNodeProps {
 
 export function TreeNode({ isRoot, isGroup, node, name }: ITreeNodeProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const openDocument = () => {
+    vscode.postMessage({
+      command: "openDocument",
+      data: { treeObject: node },
+    });
+  }
 
   if (isRoot) {
     return (
@@ -93,7 +101,7 @@ export function TreeNode({ isRoot, isGroup, node, name }: ITreeNodeProps) {
     const treeObject = node as ITreeObject;
     return (
       <div>
-        <div className="leaf" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="leaf" onClick={() => openDocument()}>
           {getIconForType(treeObject.filePath)} {treeObject.name}
         </div>
       </div>
