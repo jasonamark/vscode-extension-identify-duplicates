@@ -14,6 +14,11 @@ This Visual Studio Code extension identifies duplicate object definitions in you
 - **Manual Refresh**: Use the refresh button at the top of the tree view to refresh the list after making file changes.
 - **Automatic Exclusion**: Ignores files located in the node_modules directory and any directory prefixed with a '.'.
 
+## What's new in 1.0.12
+
+- **Set Root Directory**: Customize the root directory path for your analysis.
+- **Directory Exclusion**: Specify files to exclude from the repository analysis.
+
 ## Usage
 
 ![Repository Visualization](https://github.com/jasonamark/jasonamark/raw/main/identify-duplicates.gif)
@@ -24,8 +29,7 @@ By identifying duplicate objects, this extension helps you eliminate redundancy,
 
 ## Features in Development
 
-- **Set Root Directory**: Customize the root directory for your analysis.
-- **Directory Exclusion**: Specify directories to exclude from the repository analysis.
+- **Hot Reload**: Automatically refresh the duplicate list whenever files are saved.
 
 ## Feedback
 
