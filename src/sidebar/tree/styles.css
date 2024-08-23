@@ -1,0 +1,54 @@
+.arrow.expanded:before {
+  content: "\eab6";
+  font-size: 16px;
+}
+
+.arrow {
+  font-size: 16px;
+  margin-right: 3px;
+  width: 14px;
+  min-width: 14px;
+}
+
+.no-duplicates {
+  font-size: 11px;
+  margin-left: 20px;
+}
+
+.tree {
+  margin-left: 8px;
+}
+
+.root {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 22px;
+}
+
+.group {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 22px;
+  margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leaf {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 22px;
+  margin-left: 35px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon {
+  height: 16px;
+  margin-right: 4px;
+}

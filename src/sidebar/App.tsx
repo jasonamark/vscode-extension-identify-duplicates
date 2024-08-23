@@ -1,9 +1,16 @@
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import * as React from "react";
 import "./styles.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IDuplicateGroupsByType } from "../findDuplicateGroupsByType";
-import Tree from "./components/Tree";
+import Tree from "./tree/Tree";
+
+const FETCH_DEBOUNCE_DELAY = 1000;
+
+const defaultRootDirectory =
+  process.env.NODE_ENV === "development"
+    ? "/Users/jasonmark/Documents/REV/11Series"
+    : "";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -13,17 +20,13 @@ declare const acquireVsCodeApi: <T = unknown>() => {
 
 export const vscode = acquireVsCodeApi<{ message: string }>();
 
-const defaultRootDirectory =
-  process.env.NODE_ENV === "development"
-    ? "/Users/jasonmark/Documents/REV/11Series"
-    : "";
-
 export function App() {
   const [duplicateGroupsByType, setDuplicateGroupsByType] =
     useState<IDuplicateGroupsByType | null>(null);
-  const [excludedDirectories, setExcludedDirectories] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [excludedFiles, setExcludedFiles] = useState("");
   const [rootDirectory, setRootDirectory] = useState(defaultRootDirectory);
+
+  const isLoading = Boolean(!duplicateGroupsByType);
 
   React.useEffect(() => {
     window.addEventListener("message", (event) => {
@@ -31,16 +34,25 @@ export function App() {
         setDuplicateGroupsByType(event.data.duplicateGroupsByType);
       }
     });
-
     fetchDuplicates();
   }, []);
 
   const fetchDuplicates = useCallback(() => {
-    vscode.postMessage({
-      command: "fetchDuplicates",
-      data: { rootDirectory, excludedDirectories },
-    });
-  }, [rootDirectory, excludedDirectories]);
+    const handler = setTimeout(() => {
+      vscode.postMessage({
+        command: "fetchDuplicates",
+        data: { rootDirectory, excludedFiles },
+      });
+    }, FETCH_DEBOUNCE_DELAY);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [rootDirectory, excludedFiles]);
+
+  useEffect(() => {
+    fetchDuplicates();
+  }, [rootDirectory, excludedFiles, fetchDuplicates]);
 
   return (
     <div className="app">
@@ -58,13 +70,16 @@ export function App() {
         <div className="exclude-text">files to exclude</div>
         <VSCodeTextField
           className="control mb1"
-          value={excludedDirectories}
+          value={excludedFiles}
           onInput={(e: any) => {
-            setExcludedDirectories(e.target.value);
+            setExcludedFiles(e.target.value);
           }}
-          placeholder="e.g. *.tsx, file"
+          placeholder="e.g. *.ts, file"
         />
       </div>
+      {isLoading && (
+        <div className="loading">loading...</div>
+      )}
       {duplicateGroupsByType && (
         <Tree duplicateGroupsByType={duplicateGroupsByType} />
       )}

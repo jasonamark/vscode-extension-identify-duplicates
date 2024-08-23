@@ -1,4 +1,4 @@
-import { shouldExcludeFolder } from "./shouldExcludeFolder";
+import { shouldExcludeFile, shouldExcludeFolder } from "./shouldExclude";
 import * as fs from "fs";
 import * as ts from "typescript";
 import { exec as execCb } from "child_process";
@@ -59,10 +59,16 @@ const lifecycleMethods = new Set([
 
 export const findDuplicateGroupsByType = (
   rootDirectory: string,
-  excludedFolders: string[] = [],
+  excludedFolders: string[],
+  excludedFiles: string[],
 ): IDuplicateGroupsByType => {
   const fileTypes = [".js", ".jsx", ".ts", ".tsx", ".css", ".scss", ".less"];
-  const files = getFilesRecursively(rootDirectory, excludedFolders, fileTypes);
+  const files = getFilesRecursively(
+    rootDirectory,
+    excludedFolders,
+    excludedFiles,
+    fileTypes,
+  );
   let allParsedObjects: IParsedObject[] = [];
 
   files.forEach((filePath) => {
@@ -86,6 +92,7 @@ export const findDuplicateGroupsByType = (
 const getFilesRecursively = (
   directory: string,
   excludedFolders: string[] = [],
+  excludedFiles: string[] = [],
   fileTypes: string[],
 ): string[] => {
   let results: string[] = [];
@@ -93,25 +100,33 @@ const getFilesRecursively = (
     const list = fs.readdirSync(directory);
     list.forEach((filePath) => {
       filePath = path.join(directory, filePath);
-      if (shouldExcludeFolder(filePath, excludedFolders)) {
-        return;
-      }
-
       try {
         const stat = fs.statSync(filePath);
-        if (stat && stat.isDirectory()) {
+        if (
+          stat?.isDirectory() &&
+          !shouldExcludeFolder(filePath, excludedFolders)
+        ) {
           results = results.concat(
-            getFilesRecursively(filePath, excludedFolders, fileTypes),
+            getFilesRecursively(
+              filePath,
+              excludedFolders,
+              excludedFiles,
+              fileTypes,
+            ),
           );
-        } else if (fileTypes.some((type) => filePath.endsWith(type))) {
+        } else if (
+          stat?.isFile() &&
+          fileTypes.some((type) => filePath.endsWith(type)) &&
+          !shouldExcludeFile(filePath, excludedFiles)
+        ) {
           results.push(filePath);
         }
       } catch (e) {
-        // console.log('There was an error using statSync on', filePath);
+        console.log('There was an error using statSync on', filePath, e);
       }
     });
   } catch (e) {
-    // console.log('There was an error using readdirSync on', directory);
+    console.log('There was an error using readdirSync on', directory, e);
   }
 
   return results;
