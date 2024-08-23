@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { IDuplicateGroup, ITreeObject } from '../types';
+import "./styles.css";
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 
 const FolderIcon = () => <span>📁</span>;
 const CssIcon = () => <span>🎨</span>;
@@ -23,26 +25,29 @@ const getIconForType = (objectType: string) => {
 };
 
 export interface ITreeNodeProps {
-	node: IDuplicateGroup | ITreeObject;
-  objectType?: string;
-	isRoot?: boolean;
+	node: IDuplicateGroup[] | ITreeObject;
+  objectGroup?: string;
+	isFolder?: boolean;
 }
 
-export function TreeNode({ node, objectType, isRoot }: ITreeNodeProps) {
-  const [isExpanded, setIsExpanded] = useState(isRoot || false);
+export function TreeNode({ node, objectGroup, isFolder }: ITreeNodeProps) {
+  const [isExpanded, setIsExpanded] = useState(isFolder || false);
 
-  const isGroup = (node as IDuplicateGroup).duplicates !== undefined;
+  const isGroup = 'duplicates' in node;
 
-  if (isGroup) {
+  console.log('!! objectGroup node', objectGroup, node);
+
+  if (objectGroup) {
     return (
       <div>
-        <div onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? '▼' : '▶'} {isRoot && <FolderIcon />} {objectType}
+        <div className='node' onClick={() => setIsExpanded(!isExpanded)}>
+          {isExpanded ? <ChevronDownIcon className="arrow"/> : <ChevronRightIcon className="arrow"/>} {isFolder && <FolderIcon />} {objectGroup}
         </div>
         {isExpanded && (
+
           <div style={{ marginLeft: '20px' }}>
-            {(node as IDuplicateGroup).duplicates.map((child, index) => (
-              <TreeNode key={index} node={child} objectType={child.objectType} />
+            {(node as IDuplicateGroup[]).map((duplicateGroup, index) => (
+              {ChevronDownIcon className="arrow"/> {isFolder && <FolderIcon />} {objectGroup}
             ))}
           </div>
         )}

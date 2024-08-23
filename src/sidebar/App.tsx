@@ -1,20 +1,12 @@
 import {
-  VSCodeButton,
-  VSCodeDataGrid,
-  VSCodeDataGridCell,
-  VSCodeDataGridRow,
-  VSCodeDropdown,
-  VSCodeOption,
   VSCodeTextField,
 } from "@vscode/webview-ui-toolkit/react";
 import * as React from "react";
 import "./styles.css";
 import { useCallback, useState } from "react";
 import {
-  IDuplicateGroup,
   IDuplicateGroupsByType,
 } from "../findDuplicateGroupsByType";
-import { TreeNode } from "./components/TreeNode";
 import Tree from "./components/Tree";
 
 declare const acquireVsCodeApi: <T = unknown>() => {

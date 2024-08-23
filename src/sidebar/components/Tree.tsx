@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDuplicateGroup, IDuplicateGroupsByType, ITreeObject } from "../types";
+import { IDuplicateGroup, IDuplicateGroupsByType } from "../types";
 import { TreeNode } from "./TreeNode";
 
 export interface ITreeProps {
@@ -9,12 +9,12 @@ export interface ITreeProps {
 export function Tree({ duplicateGroupsByType }: ITreeProps) {
   return (
     <div>
-      {Object.entries(duplicateGroupsByType).map(([key, groups]) => (
+      {Object.entries(duplicateGroupsByType).map(([key, groups]: [key: string, groups: IDuplicateGroup[]]) => (
         <TreeNode
 					key={key}
-					node={{ duplicates: groups }}
-					objectType={key}
-					isRoot={true}
+					node={groups}
+					objectGroup={key}
+					isFolder={true}
 				/>
       ))}
     </div>
