@@ -182,14 +182,35 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
   const visit = (node: ts.Node) => {
     let name = "";
     let properties = "";
+
     if (ts.isEnumDeclaration(node)) {
       name = node.name?.getText();
-      node.members.map((member: any) => {
+      node.members.map((member, index) => {
+        let assignedValue: string | number | undefined;
+
+        if (member.initializer) {
+          // Get the text of the initializer if it exists
+          assignedValue = member.initializer.getText();
+        } else if (index === 0) {
+          // If the first member does not have an initializer, it is implicitly assigned to 0
+          assignedValue = 0;
+        } else {
+          // If a subsequent member does not have an initializer, it is assigned one more than the previous member
+          const previousMember = node.members[index - 1];
+          if (previousMember.initializer) {
+            const prevValue = eval(previousMember.initializer.getText()); // Not recommended for untrusted code!
+            assignedValue = typeof prevValue === 'number' ? prevValue + 1 : undefined;
+          } else {
+            assignedValue = index;
+          }
+        }
+
         properties = properties.concat(
-          `name: ${member.name?.getText() ?? ""} kind: ${member.kind}`,
+          `name: ${member.name?.getText() ?? ""} assignedValue: ${assignedValue}`,
         );
       });
     }
+
     if (ts.isInterfaceDeclaration(node)) {
       name = node.name?.getText();
       node.members.map((member: any) => {
@@ -198,10 +219,12 @@ const parseJSOrTS = (filePath: string): IParsedObject[] => {
         );
       });
     }
+
     if (ts.isMethodDeclaration(node)) {
       name = node.name?.getText();
       if (!lifecycleMethods.has(name)) {
-        properties = node.body ? node.body.getText() : "";
+        // Exclude empty bodies { }
+        properties = node.body && node.body.getText().length > 4 ? node.body.getText() : "";
       }
     }
 
