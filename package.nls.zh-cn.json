@@ -1,6 +1,6 @@
 {
-  "Duplicate Objects": "重复对象",
-  "Identifies duplicate objects defined in a repository.": "识别存储库中定义的重复对象。",
+  "Duplicate.Objects": "重复对象",
+  "Identifies.duplicate.objects.defined.in.a.repository.": "识别存储库中定义的重复对象。",
   "find": "查找",
   "identify": "识别",
   "duplicate": "重复",
@@ -12,6 +12,6 @@
   "enum": "枚举",
   "redundant": "冗余",
   "dry": "干燥",
-  "Treeview Item Clicked": "树视图项目已点击",
+  "Treeview.Item.Clicked": "树视图项目已点击",
   "Refresh": "刷新"
 }

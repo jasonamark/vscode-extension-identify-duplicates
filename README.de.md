@@ -14,7 +14,7 @@ Diese Erweiterung identifiziert doppelte Objektdefinitionen in Ihrem Code. Sie d
 - **Manuelles Aktualisieren**: Verwenden Sie die Schaltfläche „Aktualisieren“ oben in der Baumansicht, um die Liste nach Dateiänderungen zu aktualisieren.
 - **Automatische Ausschluss**: Ignoriert Dateien im node_modules-Verzeichnis und in jedem Verzeichnis, das mit einem '.' beginnt.
 
-## Was ist neu in 1.1.0
+## Was ist neu in 1.1.1
 
 - **Root-Verzeichnis festlegen**: Konfigurieren Sie den Pfad des Root-Verzeichnisses für Ihre Analyse.
 - **Verzeichnisausschluss**: Geben Sie Verzeichnisse an, die von der Repository-Analyse ausgeschlossen werden sollen.

@@ -1,6 +1,6 @@
 {
-  "Duplicate Objects": "重複オブジェクト",
-  "Identifies duplicate objects defined in a repository.": "リポジトリに定義された重複オブジェクトを識別します。",
+  "Duplicate.Objects": "重複オブジェクト",
+  "Identifies.duplicate.objects.defined.in.a.repository.": "リポジトリに定義された重複オブジェクトを識別します。",
   "find": "検索",
   "identify": "識別",
   "duplicate": "重複",
@@ -12,6 +12,6 @@
   "enum": "列挙型",
   "redundant": "冗長",
   "dry": "乾燥",
-  "Treeview Item Clicked": "ツリービューアイテムがクリックされました",
+  "Treeview.Item.Clicked": "ツリービューアイテムがクリックされました",
   "Refresh": "リフレッシュ"
 }

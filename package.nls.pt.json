@@ -1,6 +1,6 @@
 {
-  "Duplicate Objects": "Objetos Duplicados",
-  "Identifies duplicate objects defined in a repository.": "Identifica objetos duplicados definidos em um repositório.",
+  "Duplicate.Objects": "Objetos Duplicados",
+  "Identifies.duplicate.objects.defined.in.a.repository.": "Identifica objetos duplicados definidos em um repositório.",
   "find": "encontrar",
   "identify": "identificar",
   "duplicate": "duplicar",
@@ -12,6 +12,6 @@
   "enum": "enumeração",
   "redundant": "redundante",
   "dry": "seco",
-  "Treeview Item Clicked": "Item da Árvore Clicado",
+  "Treeview.Item.Clicked": "Item da Árvore Clicado",
   "Refresh": "Atualizar"
 }

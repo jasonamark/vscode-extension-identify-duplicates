@@ -1,6 +1,6 @@
 {
-  "Duplicate Objects": "डुप्लिकेट ऑब्जेक्ट्स",
-  "Identifies duplicate objects defined in a repository.": "एक रिपॉजिटरी में परिभाषित डुप्लिकेट ऑब्जेक्ट्स की पहचान करता है।",
+  "Duplicate.Objects": "डुप्लिकेट ऑब्जेक्ट्स",
+  "Identifies.duplicate.objects.defined.in.a.repository.": "एक रिपॉजिटरी में परिभाषित डुप्लिकेट ऑब्जेक्ट्स की पहचान करता है।",
   "find": "खोजना",
   "identify": "पहचानना",
   "duplicate": "डुप्लिकेट",
@@ -12,6 +12,6 @@
   "enum": "एन्नम",
   "redundant": "अनावश्यक",
   "dry": "सूखा",
-  "Treeview Item Clicked": "ट्रीव्यू आइटम पर क्लिक किया गया",
+  "Treeview.Item.Clicked": "ट्रीव्यू आइटम पर क्लिक किया गया",
   "Refresh": "रिफ्रेश"
 }

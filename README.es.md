@@ -14,7 +14,7 @@ Esta extensión identifica definiciones de objetos duplicados en tu base de cód
 - **Actualización Manual**: Utiliza el botón de actualización en la parte superior de la vista de árbol para actualizar la lista después de realizar cambios en los archivos.
 - **Exclusión Automática**: Ignora los archivos ubicados en el directorio node_modules y cualquier directorio que comience con un '.'.
 
-## Novedades en la versión 1.1.0
+## Novedades en la versión 1.1.1
 
 - **Establecer Directorio Raíz**: Configura la ruta del directorio raíz para tu análisis.
 - **Exclusión de Directorios**: Especifica directorios para excluir del análisis del repositorio.
