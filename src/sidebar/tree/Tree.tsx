@@ -2,6 +2,7 @@ import React from "react";
 import { IDuplicateGroup, IDuplicateGroupsByType } from "../types";
 import { TreeNode } from "./TreeNode";
 import "./styles.css";
+import * as l10n from '@vscode/l10n'
 
 export interface ITreeProps {
   duplicateGroupsByType: IDuplicateGroupsByType;
@@ -20,7 +21,7 @@ export function Tree({ duplicateGroupsByType }: ITreeProps) {
   return (
     <>
       {hasNoDuplicates() && (
-        <div className="no-duplicates">No Duplicates Found</div>
+        <div className="no-duplicates">{l10n.t("No Duplicates Found")}</div>
       )}
       {!hasNoDuplicates() && (
         <div className="tree">

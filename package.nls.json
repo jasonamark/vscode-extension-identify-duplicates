@@ -1,0 +1,17 @@
+{
+  "Duplicate Objects": "Duplicate Objects",
+  "Identifies duplicate objects defined in a repository.": "Identifies duplicate objects defined in a repository.",
+  "find": "find",
+  "identify": "identify",
+  "duplicate": "duplicate",
+  "identical": "identical",
+  "objects": "objects",
+  "css": "css",
+  "methods": "methods",
+  "interface": "interface",
+  "enum": "enum",
+  "redundant": "redundant",
+  "dry": "dry",
+  "Treeview Item Clicked": "Treeview Item Clicked",
+  "Refresh": "Refresh"
+}

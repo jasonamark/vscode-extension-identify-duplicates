@@ -1,0 +1,8 @@
+{
+  "Directories To Exclude": "要排除的目录",
+  "Loading": "加载中",
+  "No Duplicates Found": "未找到重复项",
+  "Root Directory": "根目录",
+  "e.g. common, folder": "例如：common, 文件夹",
+  "e.g. src/views": "例如：src/views"
+}

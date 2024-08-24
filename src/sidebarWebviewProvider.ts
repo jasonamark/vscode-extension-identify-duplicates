@@ -3,6 +3,7 @@ import { findDuplicateGroupsByType } from "./findDuplicateGroupsByType";
 import { join } from "path";
 import { ExtensionContext, ExtensionMode, Uri, Webview } from "vscode";
 import { ITreeObject } from "./sidebar/types";
+import { readFile } from "fs/promises";
 
 export class SidebarWebviewProvider implements vscode.WebviewViewProvider {
   private _webviewView?: vscode.WebviewView;
@@ -35,6 +36,20 @@ export class SidebarWebviewProvider implements vscode.WebviewViewProvider {
       } else if (message.command === "fetchDuplicates") {
         this.setDirectories(message.data);
         this.fetchDuplicates();
+      } else if (message.command === "fetchLocalization") {
+        if (vscode.l10n.uri?.fsPath) {
+          readFile(vscode.l10n.uri?.fsPath, "utf-8").then((localization) => {
+            webviewView.webview.postMessage({
+              command: message.command,
+              localization,
+            });
+          });
+        } else {
+          webviewView.webview.postMessage({
+            command: message.command,
+            localization: undefined,
+          });
+        }
       }
     }, null);
 
@@ -48,7 +63,7 @@ export class SidebarWebviewProvider implements vscode.WebviewViewProvider {
       this._excludedFiles,
     );
 
-    this._webviewView?.webview.postMessage({ duplicateGroupsByType });
+    this._webviewView?.webview.postMessage({ command: "fetchDuplicates", duplicateGroupsByType });
   }
 
   private setDirectories(data: {

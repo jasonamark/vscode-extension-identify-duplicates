@@ -1,0 +1,17 @@
+{
+  "Duplicate Objects": "Objets Dupliqués",
+  "Identifies duplicate objects defined in a repository.": "Identifie les objets dupliqués définis dans un référentiel.",
+  "find": "trouver",
+  "identify": "identifier",
+  "duplicate": "dupliquer",
+  "identical": "identique",
+  "objects": "objets",
+  "css": "CSS",
+  "methods": "méthodes",
+  "interface": "interface",
+  "enum": "énumération",
+  "redundant": "redondant",
+  "dry": "sec",
+  "Treeview Item Clicked": "Élément de Vue Arborescente Cliqué",
+  "Refresh": "Rafraîchir"
+}
