@@ -14,7 +14,7 @@ This extension identifies duplicate object definitions in your codebase. It scan
 - **Manual Refresh**: Use the refresh button at the top of the tree view to refresh the list after making file changes.
 - **Automatic Exclusion**: Ignores files located in the node_modules directory and any directory prefixed with a '.'.
 
-## What's new in 1.1.2
+## What's new in 1.1.3
 
 - **Set Root Directory**: Configure the root directory path for your analysis.
 - **Directory Exclusion**: Specify directories to exclude from the repository analysis.
