@@ -14,7 +14,7 @@ Cette extension identifie les définitions d'objets dupliqués dans votre code. 
 - **Rafraîchissement Manuel**: Utilisez le bouton de rafraîchissement en haut de la vue arborescente pour rafraîchir la liste après avoir modifié des fichiers.
 - **Exclusion Automatique**: Ignore les fichiers situés dans le répertoire node_modules et tout répertoire commençant par un '.'.
 
-## Quoi de neuf dans la version 1.1.1
+## Quoi de neuf dans la version 1.1.2
 
 - **Définir le Répertoire Racine**: Configurez le chemin du répertoire racine pour votre analyse.
 - **Exclusion de Répertoires**: Spécifiez les répertoires à exclure de l'analyse du dépôt.
